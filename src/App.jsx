@@ -30,12 +30,34 @@ const initialProducts = [
 ];
 
 function App() {
+  const [products, setProducts] = useState(initialProducts);
 
- 
+  // Handler to update rating
+  const handleRatingSubmit = (productId, newRating) => {
+    setProducts((prevProducts) => {
+      return prevProducts.map((product) => {
+        if (product.id === productId) {
+          const updatedAvgRating = ((product.avgRating * product.totalRatings) + newRating) / (product.totalRatings + 1);
+          return {
+            ...product,
+            avgRating: parseFloat(updatedAvgRating.toFixed(1)), // round to 1 decimal
+            totalRatings: product.totalRatings + 1
+          };
+        }
+        return product;
+      });
+    });
+  };
 
   return (
-    <div>
-     {/* code here */}
+    <div className="App">
+      {products.map((product) => (
+        <ProductCard
+          key={product.id}
+          product={product}
+          onRatingSubmit={handleRatingSubmit}
+        />
+      ))}
     </div>
   );
 }
